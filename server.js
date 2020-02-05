@@ -17,15 +17,30 @@ var PORT = process.env.PORT || 3000;
 var app = express();
 
 
-// Use morgan logger for logging requests
 app.use(logger("dev"));
-// Parse request body as JSON
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 // Make public a static folder
 app.use(express.static("public"));
 
+var exphbs = require("express-handlebars");
+app.engine("handlebars", exphbs({
+    defaultLayout: "main",
+    partialsDir: path.join(__dirname, "/views/layouts/partials")
+}));
+app.set("view engine", "handlebars");
 
+// Connecting to the Mongo DB
+var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoartnews";
+
+mongoose.connect(MONGODB_URI);
+
+app.get("/", function(req, res){
+  db.Article.find({"saved": false}).then(function(result){
+      var hbsObject = { articles: result };
+      res.render("index",hbsObject);
+  }).catch(function(err){ res.json(err) });
+});
 
 app.listen(PORT, function() {
     console.log("App running on port " + PORT + "!");
