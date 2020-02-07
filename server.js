@@ -28,8 +28,10 @@ app.use(bodyParser.urlencoded({
 app.use(express.static("public"));
 
 // Database configuration with mongoose
-var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoscrapper120";
-mongoose.connect(MONGODB_URI);
+mongoose.connect("mongodb://heroku_rrj9mlws:hqtd47rrelr7d7srn9hpdpa0bj@ds163721.mlab.com:63721/heroku_rrj9mlws");
+
+
+var db = mongoose.connection;
 
 // Show any mongoose errors
 db.on("error", function(error) {
@@ -40,10 +42,6 @@ db.on("error", function(error) {
 db.once("open", function() {
   console.log("Mongoose connection successful.");
 });
-
-
-// mongoose.connect(MONGODB_URI);
-
 
 
 // Routes
